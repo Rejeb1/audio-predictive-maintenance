@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Machine sound check</title>
+<style>
+:root { --bg:#01030d; --deep:#030821; --lift:#0a1333; --line:#26335a; --ink:#f3f5ff; --mute:#a3adc9; --blue:#4c6fff; --yellow:#ffc93c;
+  --green:#4ade63; --red:#ff6a5f; --peach:#ffd9a6; color-scheme:dark; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 Lato,"Segoe UI",system-ui,sans-serif; }
+button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; padding:0; }
+:focus-visible { outline:2px solid var(--yellow); outline-offset:3px; border-radius:4px; }
+.wrap { max-width:1280px; margin:0 auto; padding:0 32px; }
+header { padding:26px 0 22px; } header h1 { font-size:30px; line-height:1.15; margin:0; letter-spacing:-.01em; } header p { margin:4px 0 0; color:var(--mute); }
+.top { display:grid; grid-template-columns:340px 1fr; border-radius:14px; overflow:hidden; background:var(--deep); }
+.pick { background:var(--lift); padding:26px; display:flex; flex-direction:column; gap:18px; }
+.lab { font-size:14px; color:var(--mute); margin-bottom:8px; }
+.seg { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; background:var(--bg); border-radius:10px; padding:4px; }
+.seg button { padding:8px 0; border-radius:7px; color:var(--mute); } .seg button:hover { color:var(--ink); } .seg button[aria-pressed=true] { background:#3157f0; color:#fff; font-weight:700; }
+.src { display:grid; grid-template-columns:1fr 1fr; gap:8px; } .src button:first-child { grid-column:span 2; } .src button { padding:10px 12px; border-radius:10px; background:#111d49; text-align:left; line-height:1.25; }
+.src button:hover { background:#1a2a63; } .src button[aria-pressed=true] { box-shadow:inset 0 0 0 2px var(--yellow); } .own { display:grid; grid-template-columns:1fr 1fr; gap:8px; } .own button { display:flex; align-items:center; justify-content:center; gap:9px; padding:10px 0; border-radius:99px; border:2px solid #5c6ba3; color:var(--ink); font-size:15px; }
+.own button:hover { border-color:#fff; } .own button[aria-pressed=true] { border-color:var(--yellow); } .own svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; } .own .dot { width:13px; height:13px; border-radius:50%; background:var(--red); }
+.own .rec { background:var(--red); border-color:var(--red); color:#1b0503; font-weight:700; } .own .rec .dot { background:#1b0503; border-radius:2px; }
+.src small { display:block; color:var(--mute); font-size:13px; }
+audio { width:100%; height:40px; } .go { background:var(--yellow); color:#1d1400; font-weight:700; font-size:17px; padding:13px; border-radius:10px; } .go:hover { background:#ffd86b; } .go:disabled { opacity:.35; cursor:not-allowed; }
+.msg { min-height:24px; margin:0; font-size:14px; color:var(--mute); } .msg.err { color:var(--red); }
+.say { padding:34px 40px 26px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+.say h2 { font-size:46px; line-height:1.08; margin:0 0 10px; letter-spacing:-.02em; max-width:15em; text-wrap:balance; } .say .why { font-size:18px; margin:0; max-width:44em; color:#d5dbf2; }
+.truth { display:inline-block; margin-top:14px; font-weight:700; } .strip { margin-top:44px; }
+h3 { font-size:20px; margin:0 0 4px; } .note { color:var(--mute); margin:0 0 14px; font-size:15px; max-width:60em; }
+section.s { margin-top:46px; }
+.view { position:relative; padding-left:58px; } .view canvas { width:100%; height:300px; display:block; border-radius:8px; background:var(--deep); cursor:pointer; }
+.yax { position:absolute; left:0; top:0; height:300px; width:50px; color:var(--mute); font-size:13px; } .yax span { position:absolute; right:0; transform:translateY(-50%); white-space:nowrap; }
+.head { position:absolute; top:0; height:300px; width:2px; background:var(--yellow); display:none; pointer-events:none; }
+.xax { display:flex; justify-content:space-between; color:var(--mute); font-size:13px; padding:5px 0 0 58px; }
+.mix { display:flex; flex-wrap:wrap; gap:8px 26px; align-items:center; margin-bottom:12px; color:var(--mute); font-size:15px; } .mix label { display:flex; gap:10px; align-items:center; } input[type=range] { accent-color:var(--red); width:180px; }
+.mix i { display:inline-block; width:56px; height:10px; border-radius:5px; margin-right:8px; } .two { display:grid; grid-template-columns:1.25fr 1fr; gap:56px; }
+.fr { display:grid; grid-template-columns:140px 1fr 62px; gap:12px; align-items:center; padding:5px 0; font-size:15px; } .fr .t { position:relative; height:18px; background:var(--deep); border-radius:4px; }
+.fr .b { position:absolute; inset:0 auto 0 0; border-radius:4px; } .fr .n { position:absolute; top:-5px; bottom:-5px; width:2px; background:var(--ink); } .fr b { text-align:right; font-variant-numeric:tabular-nums; }
+.pict { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 8px; } .pict span { width:26px; height:26px; border-radius:50%; background:#1a2550; } .rel p { margin:0 0 20px; } .rel p.note { margin-bottom:14px; } .rel p b { font-size:18px; }
+.hist { display:flex; flex-wrap:wrap; gap:10px; list-style:none; padding:0; margin:12px 0 0; } .hist li { display:flex; gap:10px; align-items:center; background:var(--deep); border-radius:99px; padding:7px 16px 7px 12px; font-size:15px; } .hist i { width:12px; height:12px; border-radius:50%; } .hist .no { background:none; color:var(--mute); padding-left:0; }
+.lnk { color:#a9b9ff; text-decoration:underline; text-underline-offset:3px; margin-right:20px; } .lnk:disabled { opacity:.4; cursor:not-allowed; }
+footer { margin:52px 0 34px; padding-top:18px; border-top:1px solid var(--line); color:var(--mute); font-size:14px; } footer a { color:#a9b9ff; }
+svg text { fill:var(--mute); font-size:13px; } #tip { position:fixed; pointer-events:none; background:#16225a; border-radius:6px; padding:5px 10px; font-size:14px; display:none; z-index:9; white-space:pre; }
+@media (max-width:900px) { .top,.two { grid-template-columns:minmax(0,1fr); } .two { gap:0; } .wrap { padding:0 16px; } .say { padding:26px 20px; } .say h2 { font-size:34px; } .fr { grid-template-columns:118px 1fr 54px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Machine sound check</h1><p>Choose a machine, then check whether a sound is unusual for that machine.</p></header>
+<div class="top">
+  <div class="pick">
+    <div><div class="lab" id="lm">Machine</div><div class="seg" id="machine" role="group" aria-labelledby="lm"></div></div>
+    <div><div class="lab" id="li">Which one</div><div class="seg" id="mid" role="group" aria-labelledby="li"></div></div>
+    <div><div class="lab" id="ls"></div><div class="src" id="src"></div></div>
+    <div><div class="lab">Or use your own sound</div><div class="own" id="own"></div><input type="file" id="file" accept="audio/*" hidden></div>
+    <audio id="player" controls aria-label="Selected sound"></audio>
+    <button class="go" id="go" disabled>Analyse</button>
+    <p class="msg" id="msg" role="status"></p>
+  </div>
+  <div class="say" aria-live="polite"><h2 id="title"></h2><p class="why" id="why"></p><div><span class="truth" id="truth"></span></div><div class="strip" id="strip"></div></div>
+</div>
+
+<section class="s"><h3>Where it differs</h3><p class="note">The red overlay marks where the model makes more errors than usual on this machine. Press play to follow the sound, or click to jump.</p>
+  <div class="mix"><label>Overlay <input type="range" id="mix" min="0" max="100" value="75"></label><span><i style="background:linear-gradient(90deg,#030821,#4c6fff,#f3f5ff)"></i>quiet to loud</span><span><i style="background:linear-gradient(90deg,#030821,#ff6a5f,#ffd9a6)"></i>usual to 4 times the usual error</span></div>
+  <div class="view" id="view"><div class="yax" id="yax"></div><canvas id="map" role="img" aria-label="Spectrogram with error overlay"></canvas><div class="head" id="ph"></div></div>
+  <div class="xax"><span>0 s</span><span id="dur"></span></div></section>
+
+<div class="two">
+  <section class="s"><h3>Which frequencies</h3><p class="note">Error compared with this machine's own healthy sounds. The white line is normal (1x).</p><div id="freq"></div></section>
+  <section class="s rel"><h3>How far to trust it</h3><p class="note" id="reln"></p><div id="rel"></div></section>
+</div>
+
+<section class="s"><h3>Checked in this session</h3><ul class="hist" id="hist"></ul>
+  <p style="margin:16px 0 0"><button class="lnk" id="dl" disabled>Download this result</button><button class="lnk" id="reset">Start over</button></p></section>
+
+<footer>An unusual sound is not necessarily a fault, and no alert does not prove that the machine is healthy. Thresholds hold only for these machines and recording conditions. The model does not name the fault or predict when it will happen.<br>
+Dense autoencoder trained on normal sounds only. Examples: test clips chosen by score (median, and 90th percentile of fault scores) from DCASE 2020 Task 2 (<a href="https://zenodo.org/records/3678171">Zenodo 3678171</a>), derived from MIMII (Purohit et al., 2019), CC BY-NC-SA 4.0. <a href="/gradio">Simple version</a></footer>
+</div>
+<div id="tip"></div>
+<script>
+const $ = id => document.getElementById(id), cap = s => s[0].toUpperCase() + s.slice(1), el = h => { const t = document.createElement("template"); t.innerHTML = h; return t.content.firstChild; };
+let cfg, machine = "pump", mid = "id_04", example = "", own = "", clip = null, truth = null, result = null, history = [], run = 0, url = null, recorder = null;
+const COL = { normal: "var(--green)", watch: "var(--yellow)", alert: "var(--red)" };
+const info = () => cfg.machines[machine][mid], name = () => cap(machine) + " " + mid.slice(3);
+const f1 = v => v >= 1000 ? (v / 1000).toFixed(1) + " kHz" : v + " Hz", hz = a => a[1] >= 1000 ? `${(a[0] / 1000).toFixed(1)} to ${(a[1] / 1000).toFixed(1)} kHz` : `${a[0]} to ${a[1]} Hz`;
+function say(t, err) { $("msg").textContent = t; $("msg").className = "msg" + (err ? " err" : ""); }
+function tip(e, t) { const d = $("tip"); d.textContent = t; d.style.display = "block"; d.style.left = Math.min(e.clientX + 14, innerWidth - 190) + "px"; d.style.top = e.clientY + 14 + "px"; }
+
+// ---------- selection ----------
+function drawPick() {
+  $("machine").replaceChildren(...Object.keys(cfg.machines).map(m => { const b = el(`<button aria-pressed="${m === machine}">${cap(m)}</button>`); b.onclick = () => { if (m !== machine) { machine = m; changed(); } }; return b; }));
+  $("mid").replaceChildren(...Object.keys(cfg.machines[machine]).map(i => { const b = el(`<button aria-pressed="${i === mid}">${i.slice(3)}</button>`); b.onclick = () => { if (i !== mid) { mid = i; changed(); } }; return b; }));
+  const ex = cfg.examples.filter(e => e.machine === machine && e.id === mid).map(e => { const b = el(`<button aria-pressed="${e.file === example}">${e.truth === "fault" ? (e.clear ? "Clear fault" : "Typical fault") : "Healthy"}<small>${e.truth === "fault" ? (e.clear ? "top 10% by score" : "median score") : "typical, median score"}</small></button>`); b.onclick = () => pick(e); return b; });
+  const up = el(`<button aria-pressed="${own === "file"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>Upload</button>`); up.onclick = () => $("file").click();
+  const mic = el(recorder ? `<button class="rec"><span class="dot"></span>Stop</button>` : `<button aria-pressed="${own === "mic"}"><span class="dot"></span>Record 10 s</button>`); mic.onclick = record;
+  $("src").replaceChildren(...ex); $("own").replaceChildren(up, mic); $("ls").textContent = `Sounds of ${name()}`;
+  drawTrust(); if (!result) $("strip").innerHTML = strip(null);
+}
+function changed() { // another machine: other example sounds, other healthy reference
+  if (clip && own) { const redo = !!result; drawPick(); if (redo) analyse(); else clearResult(); return; } // own sound: compare it with the new machine
+  example = ""; setClip(null); drawPick(); say(`Now choose a sound of ${name()}.`);
+}
+function setClip(blob, label, t) {
+  clip = blob; truth = t || null; $("go").disabled = !blob; clearResult();
+  if (url) URL.revokeObjectURL(url);
+  url = blob ? URL.createObjectURL(blob) : null;
+  if (blob) { $("player").src = url; say(label + " ready."); } else { $("player").removeAttribute("src"); $("player").load(); }
+}
+async function pick(e) {
+  machine = e.machine; mid = e.id; example = e.file; own = ""; setClip(null); drawPick();
+  try { const r = await fetch("/api/example/" + e.file); if (!r.ok) throw 0; const b = await r.blob(); if (example === e.file) setClip(b, "Example", e.truth); }
+  catch { say("Example not available.", true); }
+}
+async function record() {
+  if (recorder) { recorder.stop(); return; }
+  let st;
+  try { st = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
+  catch { say("Microphone not available or not allowed.", true); return; }
+  const parts = []; recorder = new MediaRecorder(st); const type = recorder.mimeType;
+  recorder.ondataavailable = e => parts.push(e.data);
+  recorder.onstop = () => { clearTimeout(timer); st.getTracks().forEach(t => t.stop()); recorder = null; example = ""; own = "mic"; setClip(new Blob(parts, { type }), "Recording"); drawPick(); };
+  recorder.start(); say("Recording..."); drawPick(); const timer = setTimeout(() => recorder && recorder.stop(), 10300);
+}
+
+// ---------- result ----------
+function clearResult() {
+  run++; result = null; $("dl").disabled = true; $("truth").textContent = ""; $("title").style.color = "";
+  $("title").textContent = "Choose a sound, then analyse it."; $("why").textContent = "The model only knows healthy machines. It tries to rebuild what it hears: the worse it does, the more unusual the sound.";
+  $("strip").innerHTML = strip(null); $("freq").innerHTML = '<p class="note">Available after an analysis.</p>'; $("dur").textContent = ""; $("ph").style.display = "none"; $("yax").innerHTML = "";
+  const c = $("map"); c.getContext("2d").clearRect(0, 0, c.width, c.height);
+}
+function strip(r) { // every held-out healthy clip is a dot; the clip is placed among them
+  const i = info(), W = 800, H = 132, all = i.val.concat(r ? r.score : i.p95, i.p95), lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * .06, X = v => 10 + (v - lo + pad) / (hi - lo + 2 * pad) * (W - 20);
+  const bins = {}; let d = "";
+  for (const v of i.val) { const k = Math.round(X(v) / 9), n = bins[k] = (bins[k] || 0) + 1; if (n < 9) d += `<circle cx="${k * 9}" cy="${92 - (n - 1) * 8}" r="3.6" fill="#7f97ff"/>`; }
+  const th = (v, t, y, c, an) => `<line x1="${X(v)}" x2="${X(v)}" y1="${y + 4}" y2="100" stroke="${c}" stroke-width="2"/><text x="${X(v) + (an === "end" ? -5 : 5)}" y="${y + 12}" text-anchor="${an}">${t}</text>`;
+  const x = r ? X(r.score) : 0, an = x > W - 120 ? "end" : x < 120 ? "start" : "middle";
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Scores of healthy clips${r ? ", this sound " + r.score.toFixed(2) : ""}">${d}<line x1="0" x2="${W}" y1="100" y2="100" stroke="#26335a" stroke-width="2"/>${th(i.p90, "watch", 0, "var(--yellow)", "end")}${th(i.p95, "alert", 0, "var(--red)", "start")}${r ? `<path d="M${x} 96l9 15h-18z" fill="${COL[r.level]}" stroke="#030821" stroke-width="1.5"/><text x="${x}" y="127" text-anchor="${an}" style="fill:var(--ink);font-weight:700">this sound ${r.score.toFixed(2)}</text>` : ""}</svg><div class="lab" style="margin:4px 0 0">Each dot is a healthy clip the model did not train on (${i.val.length} in all). Further right is more unusual.</div>`;
+}
+const lerp = (s, v) => { const p = v * (s.length - 1), i = Math.min(s.length - 2, Math.floor(p)), f = p - i; return s[i].map((c, k) => c + (s[i + 1][k] - c) * f); };
+const BLUE = [[3, 8, 33], [35, 55, 150], [76, 111, 255], [243, 245, 255]], RED = [[255, 106, 95], [255, 150, 110], [255, 217, 166]];
+function paint() {
+  if (!result) return;
+  const { spec, err } = result, c = $("map"), ctx = c.getContext("2d"), a = atob(spec.data), b = atob(err.data), m = $("mix").value / 100;
+  c.width = spec.w; c.height = spec.h; const d = ctx.createImageData(spec.w, spec.h);
+  for (let i = 0; i < a.length; i++) {
+    const s = lerp(BLUE, a.charCodeAt(i) / 255), e = b.charCodeAt(i) / 255, r = lerp(RED, e), w = m * Math.min(1, 1.3 * e);
+    d.data.set([0, 1, 2].map(k => s[k] * (1 - .55 * m) * (1 - w) + r[k] * w).concat(255), 4 * i);
+  }
+  ctx.putImageData(d, 0, 0);
+}
+function drawTrust() {
+  const i = info(), dots = (p, c) => `<div class="pict" aria-hidden="true">${[...Array(10).keys()].map(k => `<span style="${k < Math.round(10 * p) ? "background:" + c : ""}"></span>`).join("")}</div>`;
+  $("reln").textContent = `Measured on test clips of ${name()}, counting Watch and Alert as alarms.`;
+  $("rel").innerHTML = dots(i.recall90, "var(--green)") + `<p><b>${(100 * i.recall90).toFixed(0)}%</b> of real faults raise an alarm</p>` + dots(i.false90, "var(--red)") + `<p><b>${(100 * i.false90).toFixed(0)}%</b> of healthy clips raise a false alarm</p>`;
+}
+function render(r) {
+  const c = COL[r.level], t = r.top[0];
+  $("title").textContent = { normal: "Nothing unusual heard.", watch: "Slightly unusual. Keep an eye on it.", alert: "This sound is unusual." }[r.level]; $("title").style.color = c;
+  $("why").textContent = `It scores higher than ${(100 * r.above_normal).toFixed(0)}% of ${name()}'s healthy clips. ` + (t.ratio > 1.05 ? `The largest difference is between ${hz(t.hz).replace(" to ", " and ")}, with ${t.ratio.toFixed(1)} times the usual error.` : "No frequency range stands out.") + (r.duration < cfg.clip_seconds - .05 ? ` This clip lasts ${r.duration.toFixed(1)} s, but thresholds are set on ${cfg.clip_seconds} s clips.` : "");
+  if (truth) { const flag = r.level !== "normal", fault = truth === "fault"; $("truth").textContent = fault ? (flag ? "In fact: a real fault. Found." : "In fact: a real fault. The model missed it.") : (flag ? "In fact: healthy. False alarm." : "In fact: healthy. Correct."); $("truth").style.color = fault === flag ? "var(--green)" : "var(--red)"; }
+  $("strip").innerHTML = strip(r); paint(); $("dur").textContent = r.duration.toFixed(1) + " s";
+  $("yax").innerHTML = r.mel_ticks.map(([v, p]) => `<span style="top:${300 * (1 - p)}px">${f1(v)}</span>`).join("");
+  const max = Math.max(2, ...r.bands.map(b => b.ratio)) * 1.05;
+  $("freq").innerHTML = [...r.bands].reverse().map(b => `<div class="fr"><span>${hz(b.hz)}</span><div class="t"><div class="b" style="width:${100 * b.ratio / max}%;background:${b.ratio > 1.5 ? "var(--red)" : b.ratio > 1.25 ? "var(--peach)" : "var(--blue)"}"></div><div class="n" style="left:${100 / max}%"></div></div><b>${b.ratio.toFixed(2)}x</b></div>`).join("");
+  history.unshift({ n: name(), s: r.score, l: r.level }); drawHistory();
+}
+function drawHistory() { $("hist").innerHTML = history.slice(0, 10).map(h => `<li><i style="background:${COL[h.l]}"></i>${h.n} <b>${h.s.toFixed(2)}</b> ${{ normal: "no alert", watch: "watch", alert: "alert" }[h.l]}</li>`).join("") || '<li class="no">Nothing yet.</li>'; }
+async function analyse() {
+  if (!clip) return;
+  clearResult(); const me = ++run; $("go").disabled = true; say("Listening...");
+  try {
+    const send = b => fetch(`/api/analyse?machine=${machine}&id=${mid}`, { method: "POST", body: b });
+    let res = await send(clip);
+    if (res.status === 422) { // format unknown to the server: let the browser decode it
+      const e = await res.json(), wav = e.detail.startsWith("Unreadable") ? await toWav(clip) : null;
+      if (!wav) throw new Error(e.detail);
+      res = await send(wav);
+    }
+    const r = await res.json();
+    if (!res.ok) throw new Error(typeof r.detail === "string" ? r.detail : "Analysis failed.");
+    if (me !== run) return; // the selection changed meanwhile
+    result = r; render(r); say(`Analysed in ${r.ms.toFixed(0)} ms.`); $("dl").disabled = false;
+  } catch (e) { if (me === run) say(e instanceof TypeError ? "The server cannot be reached." : e.message, true); }
+  finally { $("go").disabled = !clip; }
+}
+async function toWav(blob) {
+  const ctx = new AudioContext();
+  try {
+    const b = await ctx.decodeAudioData(await blob.arrayBuffer()), x = b.getChannelData(0), n = Math.min(x.length, b.sampleRate * 10), v = new DataView(new ArrayBuffer(44 + 2 * n));
+    const s = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    s(0, "RIFF"); v.setUint32(4, 36 + 2 * n, true); s(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, b.sampleRate, true); v.setUint32(28, 2 * b.sampleRate, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); s(36, "data"); v.setUint32(40, 2 * n, true);
+    for (let i = 0; i < n; i++) v.setInt16(44 + 2 * i, Math.max(-1, Math.min(1, x[i])) * 32767, true);
+    return new Blob([v], { type: "audio/wav" });
+  } catch { return null; } finally { ctx.close(); }
+}
+// ---------- playhead and hover ----------
+const at = e => { const b = $("map").getBoundingClientRect(); return [(e.clientX - b.left) / b.width, (e.clientY - b.top) / b.height]; };
+$("map").onclick = e => { if (result) { $("player").currentTime = at(e)[0] * result.duration; frame(); } };
+$("map").onmousemove = e => { if (!result) return; const [x, y] = at(e), w = result.err.w, i = Math.min(w - 1, Math.floor(x * w)), j = Math.max(0, Math.min(127, Math.floor(y * 128))); tip(e, `${(x * result.duration).toFixed(2)} s, around ${f1(result.mel_hz[127 - j])}\n${(v => v ? (v < 255 ? (1 + 3 * v / 255).toFixed(1) : "4 or more") + " times the usual error" : "usual error or less")(atob(result.err.data).charCodeAt(j * w + i))}`); };
+$("map").onmouseleave = () => $("tip").style.display = "none";
+function frame() { const p = $("player"), h = $("ph"); if (result && url) { h.style.display = "block"; h.style.left = 58 + Math.min(1, p.currentTime / result.duration) * $("map").clientWidth + "px"; } if (!p.paused) requestAnimationFrame(frame); }
+$("player").onplay = frame; $("player").onseeked = frame;
+
+(async () => {
+  cfg = await (await fetch("/api/config")).json();
+  clearResult(); drawPick(); drawHistory();
+  $("go").onclick = analyse; $("mix").oninput = paint;
+  $("file").onchange = e => { const f = e.target.files[0]; if (f) { example = ""; own = "file"; setClip(f, f.name); drawPick(); } e.target.value = ""; };
+  $("reset").onclick = () => { history = []; example = own = ""; setClip(null); drawPick(); drawHistory(); say(""); scrollTo({ top: 0, behavior: "smooth" }); };
+  $("dl").onclick = () => { const { spec, err, mel_hz, mel_ticks, ...r } = result, a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify({ machine, id: mid, ground_truth: truth, date: new Date().toISOString(), ...r }, null, 1)], { type: "application/json" })); a.download = "analysis.json"; a.click(); };
+  // ?example=a.wav,b.wav analyses these examples in turn on load
+  for (const f of (new URLSearchParams(location.search).get("example") || "").split(",")) { const e = cfg.examples.find(x => x.file === f); if (e) { await pick(e); await analyse(); } }
+})().catch(() => say("The server cannot be reached.", true));
+</script>
+</body>
+</html>

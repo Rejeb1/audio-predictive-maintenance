@@ -131,7 +131,7 @@ entraînements (Tesla T4).
 | `src/asd` | données, log-mel, modèles, scores, métriques |
 | `scripts` | entraînement, évaluation, export, préparation de la démo |
 | `results` | scores par extrait, tableaux, figures |
-| `demo`, `app.py` | application Gradio |
+| `demo`, `app.py` | page web (FastAPI) ; version Gradio simple sur `/gradio` |
 | `rapport` | rapport LaTeX et PDF |
 | `presentation` | diapositives (anglais), modèle Capsule, licence MIT |
 

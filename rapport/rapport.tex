@@ -155,9 +155,10 @@ chaîne dense complète, pour 3,5 points d'AUC sur la pompe. Les scores changent
 Ces mesures viennent d'un ordinateur portable, pas d'une carte embarquée.
 
 \section{Démonstrateur}
-Une application Gradio (CPU, ONNX) accepte un fichier ou un enregistrement au microphone et affiche le score, le verdict, le spectrogramme
-et la carte d'erreur. Les exemples fournis sont des extraits de score médian ; la panne de ventilateur y est manquée, ce qui illustre
-les limites mesurées. Les seuils ne valent que pour ces machines et ces conditions d'enregistrement.
+Une page web (FastAPI, CPU, ONNX, avec une version Gradio simple) accepte un fichier ou un enregistrement au microphone et affiche l'état
+(pas d'alerte, surveillance au-delà du 90	extsuperscript{e} percentile, alerte au-delà du 95	extsuperscript{e}), le score parmi ceux des sons normaux, les bandes de fréquences les plus anormales
+et la carte d'erreur superposée au spectrogramme, relative à l'erreur habituelle de la machine. Pour chaque machine, trois extraits de test choisis par règle sont fournis : un son normal et une panne de score médian, et une panne au 90	extsuperscript{e} percentile des scores de panne.
+La panne médiane est manquée sur 7 des 8 machines, ce qui illustre les limites mesurées. Les seuils ne valent que pour ces machines et ces conditions d'enregistrement.
 
 \section{Limites}
 \begin{itemize}

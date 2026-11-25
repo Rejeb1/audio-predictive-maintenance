@@ -302,10 +302,10 @@ slide("slide-4 chartslide", f'<div class="slide-inner x-wide">{head("Small enoug
       notes([("3.5x smaller", "lime", "Dense INT8 dynamic keeps its AUC"),
              ("About 8 ms", "sky", "Whole dense INT8 pipeline, log-mel included"),
              ("820 ms", "coral", "PANNs CNN14 in PyTorch: about 100 times slower, 80M parameters")]) + "</div>", 4)
-slide("slide-9", f'<div class="slide-inner x-demo"><div class="panel"><img alt="Demo screenshot" src="{img(A / "demo.jpg", (0, 0, 785, 500))}"></div>'
-      '<div class="text-side"><h2>Live demo</h2><p>Upload or record a sound, choose the machine, and get a verdict, a spectrogram and an error map.</p>'
-      "<p>The examples are typical clips, including a fan fault that the model <b>misses</b>.</p>"
-      '<div class="text-pills"><div class="mini-pill pill-lime">Gradio</div><div class="mini-pill pill-sky">ONNX on CPU</div>'
+slide("slide-9", f'<div class="slide-inner x-demo"><div class="panel"><img alt="Demo screenshot" src="{img(A / "demo.jpg")}"></div>'
+      '<div class="text-side"><h2>Live demo</h2><p>Upload or record a sound, choose the machine, and get a plain verdict, the score among healthy clips, and the error over the spectrogram.</p>'
+      "<p>Each machine has a healthy clip, a typical fault and a clear fault. The typical fault is <b>missed on 7 of 8 machines</b>.</p>"
+      '<div class="text-pills"><div class="mini-pill pill-lime">FastAPI + Gradio</div><div class="mini-pill pill-sky">ONNX on CPU</div>'
       '<div class="mini-pill pill-yellow">localhost:7860</div></div></div></div>', 4)
 slide("slide-3", f'<div class="slide-inner">{head("What we learned, and what is missing")}' + cards([
     ("1", "lime", "Findings", "Normal sounds alone can reveal faults. The best method depends on the machine, and noise is a major limit. "
@@ -377,7 +377,7 @@ EXTRA = """
   .tbl.big { font-size: 1.12rem; } .tbl.heat { font-size: 1.08rem; } .heat .rowh { font-family: var(--font-display); font-size: 1.3rem; }
   .legend { display: flex; justify-content: center; flex-wrap: wrap; gap: .3rem 1.4rem; font-size: .95rem; } .legend span { display: inline-flex; align-items: center; gap: .4rem; }
   .legend svg { width: 2.4rem; }
-  .slide-9 .slide-inner.x-map { grid-template-columns: 1.45fr 1fr; max-width: 66rem; gap: 2rem; } .slide-9 .slide-inner.x-demo { grid-template-columns: 1.35fr 1fr; max-width: 64rem; gap: 2.2rem; }
+  .slide-9 .slide-inner.x-map { grid-template-columns: 1.45fr 1fr; max-width: 66rem; gap: 2rem; } .slide-9 .slide-inner.x-demo { grid-template-columns: 1.15fr 1fr; max-width: 64rem; gap: 2.2rem; }
   .x-map .panel { padding: .8rem; } .x-map .text-side h2 { font-size: 2.2rem; } .x-map .text-side p { font-size: 1.08rem; }
   .slide-9 .visual-side { height: 22rem; } .slide-9 .text-side .text-pills .mini-pill { font-size: .9rem; text-transform: none; }
   .stack { position: absolute; inset: 1.4rem; display: flex; flex-direction: column; justify-content: space-around; align-items: center; } .stack .pill { padding: .7rem; font-size: 1.05rem; font-weight: 600; }

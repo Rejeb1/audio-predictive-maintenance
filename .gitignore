@@ -8,3 +8,4 @@ rapport/*.out
 .gradio/
 colab/
 presentation/speaker_script.md
+presentation/speaker_script.pdf

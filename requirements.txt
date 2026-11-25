@@ -6,3 +6,6 @@ onnxruntime
 pandas
 soundfile
 tqdm
+fastapi
+uvicorn
+scipy
