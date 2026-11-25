@@ -1,0 +1,8 @@
+gradio==6.32.0
+librosa==0.11.0
+matplotlib
+numpy
+onnxruntime
+pandas
+soundfile
+tqdm

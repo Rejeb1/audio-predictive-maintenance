@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+rapport/*.aux
+rapport/*.log
+rapport/*.out
+.claude/
+.gradio/
+colab/
+presentation/speaker_script.md

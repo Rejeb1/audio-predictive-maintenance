@@ -1,0 +1,11 @@
+\begin{tabular}{llcccc}
+\toprule
+Modèle & Version & Taille (Ko) & AUC pompe & AUC vent. & Latence (ms) \\
+\midrule
+AE dense & FP32 & 1061 & 73,1 & 66,5 & 2,5 \\
+AE dense & INT8 statique & 325 & 73,7 & 63,8 & 2,8 \\
+AE dense & INT8 dynamique & 299 & 73,0 & 66,7 & 3,0 \\
+AE conv. & FP32 & 1490 & 68,8 & 60,9 & 11,7 \\
+AE conv. & INT8 statique & 430 & 70,1 & 59,2 & 8,0 \\
+\bottomrule
+\end{tabular}
